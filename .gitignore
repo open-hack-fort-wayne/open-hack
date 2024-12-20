@@ -1,0 +1,5 @@
+# Rust Build Artifacts
+target/
+
+# Markdown Book Build Artifacts
+book/
