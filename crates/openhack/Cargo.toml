@@ -1,0 +1,24 @@
+[package]
+name = "openhack"
+version = "0.1.0"
+edition = "2024"
+
+[features]
+default = ["runtime", "serde"]
+runtime = ["dep:sqlx", "dep:tokio", "dep:tracing"]
+serde = ["dep:serde"]
+
+[dependencies]
+sqlx = { workspace = true, optional = true, features = [
+  "postgres",
+  "runtime-tokio",
+] }
+tokio = { workspace = true, optional = true, features = ["full"] }
+serde = { workspace = true, optional = true, features = ["derive"] }
+anyhow = { workspace = true }
+tracing = { workspace = true, optional = true }
+chrono = { workspace = true, features = ["serde"] }
+derive_more = { workspace = true, features = ["full"] }
+
+[dev-dependencies]
+mockall.workspace = true

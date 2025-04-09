@@ -17,7 +17,8 @@ init-dev:
 
   @just _binstall "mdbook" \
                   "mdbook-journal" \
-                  "mdbook-mermaid"
+                  "mdbook-mermaid" \
+                  "mdbook-anchors-aweigh"
 
   @just _binstall "cargo-criterion"
 
