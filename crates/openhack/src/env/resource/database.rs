@@ -1,10 +1,5 @@
 use super::*;
 
-/// currently a marker to determine a database connection
-pub trait Connection: Stable {}
-
-impl Connection for sqlx::PgPool {}
-
 /// # Database
 ///
 /// Simple adapter trait around [sqlx] which works in concert with
@@ -12,16 +7,13 @@ impl Connection for sqlx::PgPool {}
 /// usage.
 ///
 pub trait Database {
-    /// Remote access to the data
-    type Conn: Connection;
-
     /// # Get Connection
     ///
     /// This should be the only method you need to actually implement
     /// to have access to the database.  The remainder of the methods
     /// in this trait rely on strategy pattern traits.
     ///
-    fn get_conn(&self) -> &Self::Conn;
+    fn get_conn(&self) -> &sqlx::PgPool;
 
     /// # Execute Query
     ///
@@ -29,12 +21,22 @@ pub trait Database {
     /// access to the connection for execution.  The query given is
     /// traced with instrumentation for debugging and monitoring.
     ///
-    #[instrument(skip(self))]
-    fn exec_query<Q>(&self, query: &Q) -> impl Future<Output = Result<Q::Output>>
+    #[tracing::instrument(skip(self))]
+    fn exec_query<Q>(&self, query: &Q) -> impl Future<Output = Result<Q::Success, Q::Failure>>
     where
-        Q: Query<<Self as Database>::Conn>,
+        Q: Query,
     {
         query.exec(self.get_conn())
+    }
+}
+
+// Blanket Database impl for any resource of pgPool
+impl<T> Database for T
+where
+    T: Resource<sqlx::PgPool>,
+{
+    fn get_conn(&self) -> &sqlx::PgPool {
+        self.as_res()
     }
 }
 
@@ -47,12 +49,16 @@ pub trait Database {
 /// **WARNING**:  The query is traced by the default database.  Please
 /// make sure any sensitive data is omitted by the [Debug] output.
 ///
-pub trait Query<Connection>: Stable + 'static {
-    type Output;
+pub trait Query: Stable + 'static {
+    type Success;
+    type Failure;
 
     /// run query and return result
-    fn exec(&self, conn: &Connection) -> impl Future<Output = Result<Self::Output>> {
-        async move { anyhow::bail!("Query Not Implemented {:?}", self) }
+    fn exec(
+        &self,
+        _conn: &sqlx::PgPool,
+    ) -> impl Future<Output = Result<Self::Success, Self::Failure>> {
+        async { todo!() }
     }
 }
 
@@ -61,15 +67,14 @@ mockall::mock! {
     Db {}
 
     impl Database for Db {
-        type Conn = sqlx::PgPool;
 
         fn get_conn(&self) -> &sqlx::PgPool {
             unreachable!("Pool not available")
         }
 
-        fn exec_query<Q>(&self, query: &Q) -> impl Future<Output = Result<Q::Output>>
+        fn exec_query<Q>(&self, query: &Q) -> impl Future<Output = Result<Q::Success, Q::Failure>>
         where
-            Q: Query<sqlx::PgPool>,
+            Q: Query,
         {
             query.exec(self.get_conn())
         }
@@ -83,12 +88,13 @@ mod test {
 
     #[derive(Debug, PartialEq, Eq)]
     struct SampleQuery(i64);
-    impl Query<sqlx::PgPool> for SampleQuery {
-        type Output = i32;
+    impl Query for SampleQuery {
+        type Success = i32;
+        type Failure = anyhow::Error;
     }
 
     #[tokio::test]
-    async fn the_mock_works() -> Result<()> {
+    async fn the_mock_works() -> anyhow::Result<()> {
         let mut db = MockDb::new();
         db.expect_exec_query()
             .with(eq(&SampleQuery(42)))

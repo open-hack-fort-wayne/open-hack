@@ -9,6 +9,12 @@ default:
 list:
   @just --list
 
+# resets the database
+db-reset:
+  sqlx db drop
+  sqlx db create
+  cd ./crates/openhack/ && sqlx migrate run
+
 # Prepare Environment for Development
 init-dev:
   @just _green "Preparing Environment for OpenHack"

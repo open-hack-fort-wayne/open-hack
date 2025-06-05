@@ -2,4 +2,5 @@
 #[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
 pub struct Config {
     pub db_url: String,
+    pub password_secret: String,
 }

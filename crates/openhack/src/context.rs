@@ -1,13 +1,13 @@
 #[derive(Debug, Clone, Default, PartialEq, Eq, Hash)]
 #[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
 pub enum Context {
-    // Absolute authority
+    /// Absolute authority
     Root,
 
-    // On behalf of a user
+    /// On behalf of a user
     User(i64),
 
-    // Uknown / anonymous
+    /// Uknown / anonymous
     #[default]
     Nobody,
 }

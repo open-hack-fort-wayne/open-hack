@@ -4,7 +4,16 @@
 //! Keeping developers in contact with each other.
 //!
 
-/// All of possible state around calls into the library
+// ====================[ Public Exports ]====================
+
+pub use openhack::OpenHack;
+
+/// Library Error / Result
+pub use anyhow::{Error, Result};
+
+// ====================[ Public Modules ]====================
+
+/// All the possible state around calls into the library
 pub mod context;
 
 /// Configuration on the running library
@@ -19,8 +28,13 @@ pub mod common;
 /// Public facing data structures
 pub mod entity;
 
-/// Library Error / Result
-pub use anyhow::{Error, Result};
+// ====================[ Private Modules ]===================
 
-/// The runtime environment
+/// Runtime environment
 mod env;
+
+/// Library Application Interface
+mod openhack;
+
+#[cfg(test)]
+mod support;

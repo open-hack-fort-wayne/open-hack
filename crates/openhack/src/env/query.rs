@@ -1,6 +1,8 @@
-use super::*;
+use crate::env::resource::database::Query;
 use ::derive_more::Debug as DebugMore;
-use ::sqlx::{FromRow, PgPool};
-use resource::database::{Connection, Database, Query};
+use ::serde::{Deserialize, Serialize};
+use ::sqlx::PgPool;
 
-pub mod user;
+mod insert_user;
+
+pub use insert_user::{InsertUser, InsertUserError};
