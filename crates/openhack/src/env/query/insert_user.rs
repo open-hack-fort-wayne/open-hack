@@ -78,7 +78,7 @@ mod test {
         let user = create_john_smith().exec(&pool).await?;
         assert!(user.id > UserId(0));
         assert_eq!(&user.username, "john-smith");
-        assert_eq!(&user.email, "john-smith@hotmail.com");
+        assert_eq!(user.email.as_str(), "john-smith@hotmail.com");
         assert!(user.last_login.is_none());
         Ok(())
     }

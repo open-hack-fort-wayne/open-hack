@@ -3,7 +3,7 @@
 /// Meant to avoid leaking senstive email addresses
 /// as well as provide a common set of validation.
 ///
-#[derive(derive_more::Debug, Clone, validator::Validate, PartialEq, Eq)]
+#[derive(derive_more::Debug, Clone, validator::Validate, PartialEq, Eq, Default, Hash)]
 #[cfg_attr(feature = "serde", derive(serde::Deserialize, serde::Serialize))]
 #[cfg_attr(feature = "serde", serde(transparent))]
 pub struct Email {

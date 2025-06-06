@@ -1,4 +1,4 @@
-use super::UserId;
+use super::{Email, UserId};
 use crate::common::DateTimeUtc;
 
 #[derive(Debug, Clone, PartialEq, Eq, Hash, Default, bon::Builder)]
@@ -12,7 +12,7 @@ pub struct User {
     pub username: String,
 
     #[builder(into)]
-    pub email: String,
+    pub email: Email,
 
     #[builder(into)]
     pub created_at: DateTimeUtc,

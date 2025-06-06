@@ -1,3 +1,5 @@
+use crate::entity::UserId;
+
 #[derive(Debug, Clone, Default, PartialEq, Eq, Hash)]
 #[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
 pub enum Context {
@@ -5,7 +7,7 @@ pub enum Context {
     Root,
 
     /// On behalf of a user
-    User(i64),
+    User(UserId),
 
     /// Uknown / anonymous
     #[default]

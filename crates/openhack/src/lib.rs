@@ -6,18 +6,11 @@
 
 // ====================[ Public Exports ]====================
 
+pub use config::Config;
+pub use context::Context;
 pub use openhack::OpenHack;
 
-/// Library Error / Result
-pub use anyhow::{Error, Result};
-
 // ====================[ Public Modules ]====================
-
-/// All the possible state around calls into the library
-pub mod context;
-
-/// Configuration on the running library
-pub mod config;
 
 /// All interactions to the library are via commands
 pub mod command;
@@ -30,11 +23,18 @@ pub mod entity;
 
 // ====================[ Private Modules ]===================
 
+/// Configuration on the running library
+mod config;
+
+/// All the possible state around calls into the library
+mod context;
+
 /// Runtime environment
 mod env;
 
 /// Library Application Interface
 mod openhack;
 
+/// Testing Support
 #[cfg(test)]
 mod support;
