@@ -1,16 +1,17 @@
 use super::*;
-use crate::entity::User;
+use crate::entity::{Email, PasswordHash, User};
 use ::sqlx::postgres::PgDatabaseError;
 
-#[derive(DebugMore, Clone, Serialize, Deserialize)]
+#[derive(DebugMore, Clone, Serialize, Deserialize, bon::Builder)]
 pub struct InsertUser {
+    #[builder(into)]
     pub username: String,
 
-    #[debug(skip)]
-    pub password_hash: String,
+    #[builder(into)]
+    pub password_hash: PasswordHash,
 
-    #[debug(skip)]
-    pub email: String,
+    #[builder(into)]
+    pub email: Email,
 }
 
 #[derive(Debug, thiserror::Error)]
@@ -41,8 +42,8 @@ impl Query for InsertUser {
                     last_login;
             "#,
             &self.username,
-            &self.email,
-            &self.password_hash,
+            self.email.as_str(),
+            self.password_hash.as_str(),
         );
 
         query.fetch_one(conn).await.map_err(|error| match error {
@@ -62,19 +63,20 @@ impl Query for InsertUser {
 #[cfg(test)]
 mod test {
     use super::*;
+    use crate::entity::UserId;
 
     fn create_john_smith() -> InsertUser {
-        InsertUser {
-            username: "john-smith".to_owned(),
-            password_hash: "bad-password".to_owned(),
-            email: "john-smith@hotmail.com".to_owned(),
-        }
+        InsertUser::builder()
+            .username("john-smith")
+            .password_hash("bad-password")
+            .email("john-smith@hotmail.com")
+            .build()
     }
 
     #[sqlx::test]
     async fn creation_works(pool: PgPool) -> Result<(), InsertUserError> {
         let user = create_john_smith().exec(&pool).await?;
-        assert!(user.id > 0);
+        assert!(user.id > UserId(0));
         assert_eq!(&user.username, "john-smith");
         assert_eq!(&user.email, "john-smith@hotmail.com");
         assert!(user.last_login.is_none());

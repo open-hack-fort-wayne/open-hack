@@ -1,21 +1,21 @@
 use super::core::CommandExt;
-use crate::entity::User;
+use crate::entity::{Email, Password, User};
 use crate::env::query::{InsertUser, InsertUserError};
 use ::validator::Validate;
 
-#[derive(Debug, Clone, validator::Validate, bon::Builder)]
+#[derive(derive_more::Debug, Clone, Validate, bon::Builder)]
 #[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
 pub struct CreatUser {
     #[builder(into)]
     pub username: String,
 
     #[builder(into)]
-    #[validate(length(min = 12))]
-    pub password: String,
+    #[validate(nested)]
+    pub password: Password,
 
     #[builder(into)]
-    #[validate(email)]
-    pub email: String,
+    #[validate(nested)]
+    pub email: Email,
 }
 
 #[derive(Debug, thiserror::Error)]
@@ -45,13 +45,13 @@ impl CommandExt for CreatUser {
         self.validate()?;
 
         let password_hash = env
-            .hash_password(&self.password)
+            .hash_password(self.password.as_str())
             .map_err(CreateUserError::BadPassword)?;
 
         env.exec_query(&InsertUser {
             username: self.username.clone(),
             email: self.email.clone(),
-            password_hash,
+            password_hash: password_hash.into(),
         })
         .await
         .map_err(CreateUserError::from)
@@ -75,6 +75,7 @@ mod tests {
     use super::*;
     use crate::{
         context::Context,
+        entity::UserId,
         support::{env::*, prelude::*},
     };
     use ::mockall::predicate;
@@ -92,8 +93,8 @@ mod tests {
             .expect_exec_query()
             .withf(|insert: &InsertUser| {
                 insert.username == "jdong"
-                    && insert.password_hash == "super-hash"
-                    && insert.email == "jdong@hotmail.com"
+                    && insert.password_hash.as_str() == "super-hash"
+                    && insert.email.as_str() == "jdong@hotmail.com"
             })
             .returning(|_| Ok(User::default()));
 
@@ -106,7 +107,7 @@ mod tests {
             .build();
 
         let user = create_user.exec(&ctx, &mock_env).await?;
-        assert_eq!(user.id, 0);
+        assert_eq!(user.id, UserId(0));
 
         Ok(())
     }
