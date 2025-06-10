@@ -3,12 +3,12 @@
 #[cfg_attr(feature = "serde", serde(transparent))]
 #[derive(sqlx::Type)]
 #[sqlx(transparent)]
-pub struct UserId(pub i32);
+pub struct EventId(pub i32);
 
 mod impls {
     use super::*;
 
-    impl From<i32> for UserId {
+    impl From<i32> for EventId {
         fn from(value: i32) -> Self {
             Self(value)
         }

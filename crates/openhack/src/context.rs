@@ -13,3 +13,17 @@ pub enum Context {
     #[default]
     Nobody,
 }
+
+impl Context {
+    /// # User Id
+    ///
+    /// Fetches the [UserId] for the context if
+    /// one is available.
+    ///
+    pub fn user_id(&self) -> Option<UserId> {
+        match self {
+            Self::User(id) => Some(*id),
+            Self::Nobody | Self::Root => None,
+        }
+    }
+}
