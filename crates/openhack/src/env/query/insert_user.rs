@@ -1,5 +1,5 @@
 use super::*;
-use crate::entity::{Email, PasswordHash, User};
+use crate::entity::{EmailAddress, PasswordHash, User};
 use ::sqlx::postgres::PgDatabaseError;
 
 #[derive(DebugMore, Clone, Serialize, Deserialize, bon::Builder)]
@@ -11,7 +11,7 @@ pub struct InsertUser {
     pub password_hash: PasswordHash,
 
     #[builder(into)]
-    pub email: Email,
+    pub email: EmailAddress,
 }
 
 #[derive(Debug, thiserror::Error)]

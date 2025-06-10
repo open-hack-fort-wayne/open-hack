@@ -1,5 +1,5 @@
 use super::core::CommandExt;
-use crate::entity::{Email, Password, User, UserId};
+use crate::entity::{EmailAddress, Password, User, UserId};
 use crate::env::query::{FetchPasswordHash, FetchPasswordHashError, FetchUserForLogin};
 use ::validator::Validate;
 
@@ -12,7 +12,7 @@ pub struct LoginUser {
 
     #[builder(into)]
     #[validate(nested)]
-    pub email: Email,
+    pub email: EmailAddress,
 }
 
 #[derive(Debug, thiserror::Error)]

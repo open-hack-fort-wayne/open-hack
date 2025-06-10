@@ -9,7 +9,7 @@
 
 // ====================[ Public Exports ]====================
 
-pub use email::Email;
+pub use email_address::EmailAddress;
 pub use event::Event;
 pub use event_id::EventId;
 pub use event_rsvp::EventRsvp;
@@ -25,7 +25,7 @@ pub(crate) use user_hash::UserHash;
 
 // ====================[ Private Modules ]===================
 
-mod email;
+mod email_address;
 mod event;
 mod event_id;
 mod event_rsvp;

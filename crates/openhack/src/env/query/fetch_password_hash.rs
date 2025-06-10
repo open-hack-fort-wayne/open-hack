@@ -1,10 +1,10 @@
 use super::*;
-use crate::entity::{Email, UserHash};
+use crate::entity::{EmailAddress, UserHash};
 
 #[derive(DebugMore, Clone, Serialize, Deserialize, bon::Builder)]
 pub struct FetchPasswordHash {
     #[builder(into)]
-    pub email: Email,
+    pub email: EmailAddress,
 }
 
 #[derive(Debug, thiserror::Error)]

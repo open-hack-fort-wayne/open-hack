@@ -1,5 +1,5 @@
 use super::core::CommandExt;
-use crate::entity::{Email, Password, User};
+use crate::entity::{EmailAddress, Password, User};
 use crate::env::query::{InsertUser, InsertUserError};
 use ::validator::Validate;
 
@@ -15,7 +15,7 @@ pub struct CreatUser {
 
     #[builder(into)]
     #[validate(nested)]
-    pub email: Email,
+    pub email: EmailAddress,
 }
 
 #[derive(Debug, thiserror::Error)]

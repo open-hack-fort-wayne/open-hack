@@ -6,7 +6,7 @@
 #[derive(derive_more::Debug, Clone, validator::Validate, PartialEq, Eq, Default, Hash)]
 #[cfg_attr(feature = "serde", derive(serde::Deserialize, serde::Serialize))]
 #[cfg_attr(feature = "serde", serde(transparent))]
-pub struct Email {
+pub struct EmailAddress {
     #[debug(skip)]
     #[validate(email)]
     data: String,
@@ -15,13 +15,13 @@ pub struct Email {
 mod impls {
     use super::*;
 
-    impl<T: Into<String>> From<T> for Email {
+    impl<T: Into<String>> From<T> for EmailAddress {
         fn from(value: T) -> Self {
             Self { data: value.into() }
         }
     }
 
-    impl Email {
+    impl EmailAddress {
         /// To avoid accidentally leaking, if you want
         /// to get the string value you must call
         /// [Email::as_str]
@@ -40,24 +40,24 @@ mod impls {
 
 #[cfg(test)]
 mod tests {
-    use super::Email;
+    use super::EmailAddress;
     use validator::Validate;
 
     #[test]
     fn validate_success() {
-        let email = Email::from("bfalk@rofl.com");
+        let email = EmailAddress::from("bfalk@rofl.com");
         email.validate().expect("to validate");
     }
 
     #[test]
     fn validate_failure() {
-        let email = Email::from("rdog");
+        let email = EmailAddress::from("rdog");
         email.validate().expect_err("to not validate");
     }
 
     #[test]
     fn deserialize_directly_from_string() {
-        let email: Email = serde_json::from_str("\"bfalk@rofl.com\"").unwrap();
+        let email: EmailAddress = serde_json::from_str("\"bfalk@rofl.com\"").unwrap();
         email.validate().expect("to validate");
         assert_eq!("bfalk@rofl.com", email.as_str());
     }
