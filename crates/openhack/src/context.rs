@@ -26,4 +26,9 @@ impl Context {
             Self::Nobody | Self::Root => None,
         }
     }
+
+    /// Sometimes we just want to know its nobody
+    pub fn is_nobody(&self) -> bool {
+        *self == Self::Nobody
+    }
 }

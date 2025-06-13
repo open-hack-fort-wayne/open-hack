@@ -83,8 +83,6 @@ impl Query for UpdateEventForCreator {
             "#,
         );
 
-        dbg!(builder.sql());
-
         Ok(match builder.build().fetch_optional(conn).await? {
             Some(row) => Some(Event::from_row(&row)?),
             None => None,
@@ -95,6 +93,7 @@ impl Query for UpdateEventForCreator {
 #[cfg(test)]
 mod tests {
     use super::*;
+
     #[sqlx::test(fixtures("./fixtures/jdongs-event.sql"))]
     async fn touch_record(pool: PgPool) -> Result<(), sqlx::Error> {
         let update = UpdateEventForCreator::builder()

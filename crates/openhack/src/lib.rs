@@ -12,7 +12,7 @@ pub use openhack::OpenHack;
 
 // ====================[ Public Modules ]====================
 
-/// All interactions to the library are via commands
+/// All non-idempotent requests to the library
 pub mod command;
 
 /// Shared structures and traits
@@ -20,6 +20,9 @@ pub mod common;
 
 /// Public facing data structures
 pub mod entity;
+
+/// All idempotent requests to the library
+pub mod report;
 
 // ====================[ Private Modules ]===================
 
