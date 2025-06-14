@@ -15,6 +15,24 @@ db-reset:
   sqlx db create
   cd ./crates/openhack/ && sqlx migrate run
 
+# launches the server
+serve:
+  @dx serve -p openhack_ui
+
+# run any matched tests or all by default
+test *match:
+  @cargo nextest run \
+    --all-features \
+    --workspace \
+    --exclude openhack_ui \
+    -- {{match}}
+
+# runs all fast tests
+fast-test:
+  @just test \
+    --skip "::query::" \
+    --skip "hasher_"
+
 # Prepare Environment for Development
 init-dev:
   @just _green "Preparing Environment for OpenHack"
@@ -27,6 +45,8 @@ init-dev:
                   "mdbook-anchors-aweigh"
 
   @just _binstall "cargo-criterion"
+
+  @just _binstall "dioxus-cli"
 
 # Private Helpers
 
