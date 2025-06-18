@@ -1,3 +1,5 @@
+#![cfg(feature = "web")]
+
 use dioxus::prelude::*;
 
 #[component]
@@ -45,6 +47,7 @@ fn Home() -> Element {
 #[component]
 fn Hero() -> Element {
     const HEADER_SVG: Asset = asset!("/assets/header.jpg");
+    let mut status = use_signal(|| None::<bool>);
 
     rsx! {
         div {
@@ -54,6 +57,22 @@ fn Hero() -> Element {
             div {
                 id: "links",
                 a { href: "https://discord.gg/cXXpCN99", "💬 Join Discord" }
+            }
+            button {
+                onclick: move |_| {
+                    async move {
+                        let result = crate::backend::create_user().await;
+                        status.set(Some(result.is_ok()));
+                    }
+                },
+                "Sign Up"
+            }
+            div {
+                match *status.read() {
+                    None => "",
+                    Some(true) => "Good to go",
+                    Some(false) => "didn't go so well",
+                }
             }
         }
     }
