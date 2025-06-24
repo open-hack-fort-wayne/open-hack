@@ -5,6 +5,7 @@ use dioxus::prelude::*;
 
 #[cfg(feature = "server")]
 pub async fn launch(component: fn() -> Element) {
+    use authorization::{jwt_middleware, Keys};
     use dioxus::cli_config::{server_ip, server_port};
     use openhack::{Config, OpenHack};
     use std::net::{IpAddr, Ipv4Addr, SocketAddr};
@@ -19,6 +20,8 @@ pub async fn launch(component: fn() -> Element) {
     .await
     .unwrap();
 
+    let keys = Keys::new("bad-secret".as_bytes());
+
     // Get the address the server should run on. If the CLI
     // is running, the CLI proxies fullstack into the main
     // address and we use the generated address the CLI gives us.
@@ -28,7 +31,11 @@ pub async fn launch(component: fn() -> Element) {
     let listener = TcpListener::bind(address).await.unwrap();
     let router = axum::Router::new()
         .serve_dioxus_application(ServeConfigBuilder::default(), component)
+        .layer(axum::middleware::from_fn(jwt_middleware))
         .layer(Extension(openhack))
+        .layer(Extension(keys))
         .into_make_service();
     axum::serve(listener, router).await.unwrap();
 }
+
+pub(crate) mod authorization;

@@ -3,7 +3,7 @@
 [web.app]
 
 # HTML title tag content
-title = "openhack_ui"
+title = "Fort Wayne Open Hack"
 
 # include `assets` in web platform
 [web.resource]
