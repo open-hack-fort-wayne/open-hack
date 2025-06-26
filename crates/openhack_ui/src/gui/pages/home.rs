@@ -1,3 +1,4 @@
+use crate::gui::sections::UpcomingEvents;
 use dioxus::prelude::*;
 
 #[component]
@@ -10,7 +11,6 @@ pub fn Home() -> Element {
 #[component]
 fn Hero() -> Element {
     const HEADER_SVG: Asset = asset!("/assets/header.jpg");
-    let mut status = use_signal(|| None::<bool>);
 
     rsx! {
         div {
@@ -22,5 +22,6 @@ fn Hero() -> Element {
                 a { href: "https://discord.gg/cXXpCN99", "💬 Join Discord" }
             }
         }
+        UpcomingEvents {  }
     }
 }

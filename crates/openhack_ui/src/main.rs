@@ -1,6 +1,7 @@
 mod backend;
 mod gui;
 mod server;
+mod structs;
 
 #[cfg(not(feature = "server"))]
 fn main() {

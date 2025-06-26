@@ -5,7 +5,9 @@ use dioxus::prelude::*;
 
 mod forms;
 mod pages;
-use pages::{Home, UserSignIn, UserSignOut, UserSignUp};
+mod sections;
+
+use pages::{CreateEvent, Home, UserSignIn, UserSignOut, UserSignUp};
 
 #[derive(Clone, Copy)]
 struct LoggedIn(pub bool);
@@ -49,6 +51,9 @@ pub(crate) enum Route {
 
     #[route("/logout")]
     UserSignOut {},
+
+    #[route("/create-event")]
+    CreateEvent {},
 }
 
 #[component]
@@ -62,6 +67,8 @@ fn Navbar() -> Element {
             " | "
             {if here.read().0 {
                 rsx!{
+                    Link { to: Route::CreateEvent {}, "🗓️ Create Event" }
+                    " | "
                     Link { to: Route::UserSignOut {}, "👋 Logout" }
                 }
             } else {

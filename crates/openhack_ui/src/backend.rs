@@ -1,3 +1,4 @@
+use crate::structs::Event;
 #[cfg(feature = "server")]
 use axum::Extension;
 use dioxus::prelude::*;
@@ -66,4 +67,51 @@ pub async fn signout() -> Result<(), ServerFnError> {
         ))?,
     );
     Ok(())
+}
+
+#[server(CreateEvent)]
+pub async fn create_event(
+    title: String,
+    description: String,
+    date: String,
+    location: String,
+    minutes: u16,
+) -> Result<(), ServerFnError> {
+    use chrono::Duration;
+    use openhack::common::DateTimeUtc;
+    use openhack::entity::UserId;
+    use openhack::{command::create_event::CreateEvent, Context, OpenHack};
+
+    let user_id = get_user_id()
+        .await?
+        .ok_or_else(|| ServerFnError::new("User not logged in".to_string()))?;
+    let user_id = UserId(user_id);
+
+    let date = chrono::NaiveDateTime::parse_from_str(&date, "%Y-%m-%dT%H:%M")
+        .map_err(|e| ServerFnError::new(format!("Error parsing date: {}", e)))
+        .map(|naive| DateTimeUtc::from_naive_utc_and_offset(naive, chrono::Utc))?
+        .with_timezone(&chrono::Utc);
+
+    let openhack: Extension<OpenHack> = extract().await?;
+    let context = &Context::User(user_id);
+    let runner = openhack.runner(context);
+    let create_event = &CreateEvent::builder()
+        .name(title)
+        .location(location)
+        .details(description)
+        .scheduled_date(date)
+        .duration(Duration::minutes(minutes.into()))
+        .build();
+    runner.run(create_event).await?;
+    Ok(())
+}
+
+#[server(UpcomingEvents)]
+pub async fn upcoming_events() -> Result<Vec<Event>, ServerFnError> {
+    use openhack::{report::search_events::SearchEvents, Context, OpenHack};
+    let openhack: Extension<OpenHack> = extract().await?;
+    let report = openhack.reporter(&Context::Nobody);
+    let list_events = &SearchEvents::builder().build();
+    let events = report.run(list_events).await?;
+    Ok(events.data.into_iter().map(Into::into).collect())
 }
