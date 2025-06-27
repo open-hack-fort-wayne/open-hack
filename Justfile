@@ -9,6 +9,26 @@ default:
 list:
   @just --list
 
+# resets the database
+db-reset:
+  sqlx db drop
+  sqlx db create
+  cd ./crates/openhack/ && sqlx migrate run
+
+# run any matched tests or all by default
+test *match:
+  @cargo nextest run \
+    --all-features \
+    --workspace \
+    --exclude openhack_ui \
+    -- {{match}}
+
+# runs all fast tests
+fast-test:
+  @just test \
+    --skip "::query::" \
+    --skip "hasher_"
+
 # Prepare Environment for Development
 init-dev:
   @just _green "Preparing Environment for OpenHack"
@@ -17,9 +37,12 @@ init-dev:
 
   @just _binstall "mdbook" \
                   "mdbook-journal" \
-                  "mdbook-mermaid"
+                  "mdbook-mermaid" \
+                  "mdbook-anchors-aweigh"
 
   @just _binstall "cargo-criterion"
+
+  @just _binstall "dioxus-cli"
 
 # Private Helpers
 

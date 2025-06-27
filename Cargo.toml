@@ -1,4 +1,36 @@
 # https://doc.rust-lang.org/cargo/reference/workspaces.html
 [workspace]
-resolver = "2"
-members = []
+resolver = "3"
+members = ["crates/openhack", "crates/openhack_auth"]
+
+[workspace.dependencies]
+anyhow = { version = "1.0" }
+argon2 = "0.5"
+bon = "3.6"
+chrono = { version = "0.4" }
+derive_more = { version = "2.0" }
+once_cell = { version = "1.21" }
+regex = { version = "1.11" }
+serde = { version = "1.0", features = ["derive"] }
+sqlx = { version = "0.8", features = ["postgres", "runtime-tokio", "chrono"] }
+thiserror = { version = "2.0" }
+tokio = { version = "1.44", features = ["full"] }
+tracing = { version = "0.1" }
+validator = { version = "0.20", features = ["derive"] }
+
+# normally dev dependencies
+mockall = "0.13"
+rstest = "0.25"
+serde_json = "1.0"
+
+[profile]
+
+[profile.wasm-dev]
+inherits = "dev"
+opt-level = 1
+
+[profile.server-dev]
+inherits = "dev"
+
+[profile.android-dev]
+inherits = "dev"
