@@ -53,7 +53,9 @@ const components: { title: string; href: string; description: string }[] = [
 export default function Navigation() {
   return (
     <div className="flex flex-row justify-between items-center">
-      <h1 className="p-4">FWOH</h1>
+      <h1 className="p-4">
+        <Link to="/">FWOH</Link>
+      </h1>
       <NavigationMenu viewport={false} className="">
         <NavigationMenuList className="gap-6">
           <NavigationMenuItem>
@@ -75,6 +77,11 @@ export default function Navigation() {
                         to create, learn, and grow together.
                       </p>
                     </a>
+                  </NavigationMenuLink>
+                </li>
+                <li>
+                  <NavigationMenuLink asChild>
+                    <Link to="/events">Events</Link>
                   </NavigationMenuLink>
                 </li>
                 {/* <ListItem href="/docs" title="Introduction">
@@ -109,12 +116,19 @@ export default function Navigation() {
                 </li>
                 <li>
                   <NavigationMenuLink asChild>
-                    <Link to="/about">Join our Discord</Link>
+                    <Link to="https://discord.gg/3reQUXZzCU" target="_blank">
+                      Join our Discord
+                    </Link>
                   </NavigationMenuLink>
                 </li>
                 <li>
                   <NavigationMenuLink asChild>
-                    <Link to="/about">View our GitHub</Link>
+                    <Link
+                      to="https://github.com/open-hack-fort-wayne"
+                      target="_blank"
+                    >
+                      View our GitHub
+                    </Link>
                   </NavigationMenuLink>
                 </li>
               </ul>
