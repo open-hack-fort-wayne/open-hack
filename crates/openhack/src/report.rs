@@ -2,10 +2,10 @@
 
 pub use core::ReportRunner;
 
-//-----------------------[ Public  Moudles ]------------------------
+//-----------------------[ Public  Modules ]------------------------
 
 pub mod search_events;
 
-//-----------------------[ Private Moudles ]------------------------
+//-----------------------[ Private Modules ]------------------------
 
 mod core;

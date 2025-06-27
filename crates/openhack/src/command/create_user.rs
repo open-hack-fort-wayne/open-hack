@@ -5,7 +5,7 @@ use ::validator::Validate;
 
 #[derive(derive_more::Debug, Clone, Validate, bon::Builder)]
 #[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
-pub struct CreatUser {
+pub struct CreateUser {
     #[builder(into)]
     pub username: String,
 
@@ -33,7 +33,7 @@ pub enum CreateUserError {
     BadPassword(openhack_auth::HashError),
 }
 
-impl CommandExt for CreatUser {
+impl CommandExt for CreateUser {
     type Success = User;
     type Failure = CreateUserError;
 
@@ -100,7 +100,7 @@ mod tests {
 
         let ctx = Context::default();
 
-        let create_user = CreatUser::builder()
+        let create_user = CreateUser::builder()
             .password("superbadpassword")
             .email("jdong@hotmail.com")
             .username("jdong")

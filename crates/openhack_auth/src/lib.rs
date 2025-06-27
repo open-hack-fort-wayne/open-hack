@@ -53,7 +53,7 @@ impl PasswordHasher {
         let secret = secret_bytes.into();
         let raw_ptr = Arc::into_raw(secret);
 
-        let argon2 = Argon2::new_with_secret(
+        let argon2_result = Argon2::new_with_secret(
             unsafe { &*raw_ptr },
             argon2::Algorithm::Argon2id,
             argon2::Version::V0x13,
@@ -64,7 +64,7 @@ impl PasswordHasher {
 
         Ok(Self {
             secret,
-            argon2: argon2?,
+            argon2: argon2_result?,
         })
     }
 
@@ -98,7 +98,7 @@ impl PasswordHasher {
 }
 
 #[cfg(test)]
-mod test {
+mod tests {
     use super::*;
 
     #[test]

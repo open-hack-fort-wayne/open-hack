@@ -9,7 +9,7 @@
 
 pub use core::CommandRunner;
 
-//-----------------------[ Public Moudles ]------------------------
+//-----------------------[ Public Modules ]------------------------
 
 pub mod create_event;
 pub mod create_user;
@@ -17,6 +17,6 @@ pub mod login_user;
 pub mod update_event;
 pub mod upsert_rsvp;
 
-//-----------------------[ Private Moudles ]------------------------
+//-----------------------[ Private Modules ]------------------------
 
 mod core;
