@@ -15,10 +15,6 @@ db-reset:
   sqlx db create
   cd ./crates/openhack/ && sqlx migrate run
 
-# launches the server
-serve:
-  @dx serve -p openhack_ui
-
 # run any matched tests or all by default
 test *match:
   @cargo nextest run \

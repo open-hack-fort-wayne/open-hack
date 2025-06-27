@@ -31,15 +31,10 @@ get you ready to begin local development.
 - [ ] Base Project Setup
   - [x] Development Setup Support
   - [ ] Markdown Book
-  - [ ] Cargo Workspaces Setup
-    - [ ] `app`
-    - [ ] `context`
-    - [ ] `db`
-    - [ ] `entity`
-    - [ ] `www`
+  - [x] Cargo Workspaces Setup
   - [ ] `Justfile` Workflow
-    - [ ] Build
-    - [ ] Test
+    - [x] Build
+    - [x] Test
     - [ ] Documentation
     - [ ] Formatting
   - [ ] Github Workflows Setup
