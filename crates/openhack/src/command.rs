@@ -7,6 +7,7 @@
 
 //-----------------------[ Public Exports ]-------------------------
 
+pub use core::CommandExt;
 pub use core::CommandRunner;
 
 //-----------------------[ Public Modules ]------------------------

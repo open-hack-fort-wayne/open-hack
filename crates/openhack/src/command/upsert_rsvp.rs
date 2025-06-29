@@ -4,6 +4,7 @@ use crate::env::query::UpsertEventRsvp;
 use ::validator::Validate;
 
 #[derive(derive_more::Debug, Clone, Validate, bon::Builder)]
+#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
 pub struct UpsertRsvp {
     #[builder(into)]
     pub event_id: EventId,

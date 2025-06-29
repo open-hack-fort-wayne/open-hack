@@ -1,4 +1,5 @@
 #[derive(Debug, Clone)]
+#[cfg_attr(feature = "serde", derive(serde::Deserialize, serde::Serialize))]
 pub struct NextPageResults<T> {
     pub data: Vec<T>,
     pub has_next_page: bool,

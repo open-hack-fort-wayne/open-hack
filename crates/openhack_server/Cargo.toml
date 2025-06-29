@@ -1,0 +1,16 @@
+[package]
+name = "openhack_server"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+tokio = { workspace = true }
+serde = { workspace = true }
+chrono = { workspace = true }
+axum = { workspace = true }
+axum-extra = { workspace = true }
+anyhow = { workspace = true }
+dotenvy = { workspace = true }
+tracing = { workspace = true }
+jsonwebtoken = { workspace = true }
+openhack = { path = "../openhack" }
