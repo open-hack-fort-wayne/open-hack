@@ -7,12 +7,15 @@ use chrono::Utc;
 #[cfg_attr(feature = "serde", derive(serde::Deserialize, serde::Serialize))]
 pub struct SearchEvents {
     #[builder(into, default = 20u16)]
+    #[serde(default = "default_limit")]
     pub limit: u16,
 
     #[builder(into)]
+    #[serde(default)]
     pub offset: Option<u16>,
 
     #[builder(into, default = DateSelection::After(Utc::now()))]
+    #[serde(default = "default_date_selection")]
     pub date_selection: DateSelection,
 }
 
@@ -59,11 +62,20 @@ impl ReportExt for SearchEvents {
     }
 }
 
+fn default_limit() -> u16 {
+    20
+}
+
+fn default_date_selection() -> DateSelection {
+    DateSelection::After(Utc::now())
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
     use crate::support::{date::today, env::*, prelude::*};
     use crate::{Context, entity::UserId};
+    use ::serde_json::json;
     type Result<T> = std::result::Result<T, SearchEventsError>;
 
     fn event_list(size: usize) -> Vec<Event> {
@@ -116,5 +128,23 @@ mod tests {
             .expect_err("exceeded max error");
         assert!(matches!(error, SearchEventsError::ExceededLimitMax(50)));
         Ok(())
+    }
+
+    #[rstest]
+    fn json_format() {
+        let search = SearchEvents::builder()
+            .limit(5u16)
+            .offset(10u16)
+            .date_selection(DateSelection::After(Default::default()))
+            .build();
+        let json = ::serde_json::to_value(&search).expect("valid json");
+        assert_eq!(
+            json,
+            json!({
+                "limit": 5,
+                "offset": 10,
+                "date_selection": { "After": "1970-01-01T00:00:00Z" }
+            })
+        );
     }
 }

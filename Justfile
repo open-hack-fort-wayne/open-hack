@@ -29,6 +29,10 @@ fast-test:
     --skip "::query::" \
     --skip "hasher_"
 
+# runs dev openhack http server
+serve-www:
+  @bacon run-long -- -p openhack_server
+
 # Prepare Environment for Development
 init-dev:
   @just _green "Preparing Environment for OpenHack"
@@ -42,7 +46,9 @@ init-dev:
 
   @just _binstall "cargo-criterion"
 
-  @just _binstall "dioxus-cli"
+  @just _binstall "sqlx-cli"
+
+  @just _binstall "bacon"
 
 # Private Helpers
 

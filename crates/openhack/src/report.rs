@@ -1,5 +1,6 @@
 //-----------------------[ Public Exports ]-------------------------
 
+pub use core::ReportExt;
 pub use core::ReportRunner;
 
 //-----------------------[ Public  Modules ]------------------------

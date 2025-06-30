@@ -73,6 +73,7 @@ mod tests {
     use crate::entity::{EventId, UserId};
     use crate::support::{env::*, prelude::*};
     use ::chrono::Utc;
+    use ::serde_json::json;
     type Result<T> = std::result::Result<T, CreateEventError>;
 
     #[fixture]
@@ -125,5 +126,28 @@ mod tests {
             .expect_err("needs user");
         assert!(matches!(error, CreateEventError::UserRequired));
         Ok(())
+    }
+
+    #[rstest]
+    fn json_format() {
+        let create_event = CreateEvent::builder()
+            .scheduled_date(DateTimeUtc::default())
+            .duration(Duration::minutes(1))
+            .name("name")
+            .location("location")
+            .details("details")
+            .build();
+
+        let json = ::serde_json::to_value(&create_event).expect("valid json");
+        assert_eq!(
+            json,
+            json!({
+                "scheduled_date": "1970-01-01T00:00:00Z",
+                "duration": [60, 0],
+                "name": "name",
+                "location": "location",
+                "details": "details",
+            })
+        );
     }
 }
